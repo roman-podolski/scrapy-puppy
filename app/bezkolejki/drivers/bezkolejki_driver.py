@@ -3,7 +3,10 @@ from app.bezkolejki.drivers import selenium_driver as sd
 from time import sleep
 from selenium.webdriver.common.by import By
 import icecream as ic
-
+from datetime import datetime, time
+import os
+from bs4 import BeautifulSoup
+# soup = BeautifulSoup(html_doc, 'html.parser')
 
 class MainPageLocators(object):
 
@@ -45,18 +48,51 @@ class BezkolejkiDriver(sd.SeleniumBaseFields, MainPageLocators):
         else:
             ic.ic("There is no next button")
 
+
+    def is_free_visit(self):
+        reservation_elem = self.get_element_by_xpath('//*[@id="Dataiczas3"]/div/div[1]/div[1]/div/h5')
+        reservation_text = reservation_elem.text.lower()
+        if "brak" in reservation_text:
+            ic.ic(f"There is no free visit: {reservation_text}")
+            return False
+        else:
+            ic.ic(f"There is free visit: {reservation_text}")
+            return True
+
     def calendar_screenshot(self):
-        self.get_element_by_xpath('//*[@id="Dataiczas3"]/div/div[1]/div[2]').screenshot("calendar.png")
+        screenshot_name = f"calendar {datetime.now()}"
 
-    def main(self):
-        list_of_choice = self.get_reservation_menu()
+        self.get_element_by_xpath('//*[@id="Dataiczas3"]/div/div[1]/div[2]').\
+            screenshot(f"screenshots/{str(screenshot_name)}.png")
 
-# //*[@id="Operacja2"]/div[1]/div/div/button
+        if os.path.exists(f"screenshots/{str(screenshot_name)}.png"):
+            ic.ic(f"Screenshot {screenshot_name} saved")
+        else:
+            ic.ic(f"Screenshot {screenshot_name} not saved")
 
-dd = BezkolejkiDriver()
-lista = dd.get_reservation_menu()
-dd.click_reservation_choice(1)
-dd.scroll_to_the_end()
-dd.click_next_button()
-dd.calendar_screenshot()
+    def print_free_visits_dates(self):
+        calendar_box = self.get_elements_by_xpath("//span[@aria-disabled='false']")
+        free_dates = []
+        for date in calendar_box:
+            free_date = date.click()
+            self.driver.get(free_date)
+            ic.ic(free_date)
+            free_dates.append(free_date)
+        ic.ic(f"Poszło {free_dates}")
+
+
+def main():
+    dd = BezkolejkiDriver()
+    dd.get_reservation_menu()
+    dd.click_reservation_choice(4)
+    dd.scroll_to_the_end()
+    dd.click_next_button()
+    if dd.is_free_visit():
+        dd.calendar_screenshot()
+    dd.print_free_visits_dates()
+
+
+if __name__ == "__main__":
+    main()
+
 

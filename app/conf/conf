@@ -1,0 +1,10 @@
+[tg_podolskowe_sprawy_bot]
+token=6531304941:AAEfMrp1o__47nVH4Ta_VVd6vDmHQztpFFU
+
+[Log]
+api_log_path = /var/log/api.log
+
+
+[medium]
+host=medium2.p.rapidapi.com
+key=705dee4806msh26ebc156a99c880p1e6087jsn525d5d294bc2

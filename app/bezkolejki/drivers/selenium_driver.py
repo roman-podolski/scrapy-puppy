@@ -47,18 +47,30 @@ class SeleniumBaseFields(ChromeOptions):
 
     def get_elements_by_css(self, css: str):
         ic.ic(f"Searching for: {css=}")
+        return self.driver.find_elements(By.CSS_SELECTOR, css)
+
+    def get_element_by_css(self, css: str):
+        ic.ic(f"Searching for: {css=}")
         return self.driver.find_element(By.CSS_SELECTOR, css)
 
     def get_element_by_xpath(self, xpath: str):
         ic.ic(f"Searching for: {xpath=}")
         return self.driver.find_element(By.XPATH, xpath)
 
+    def get_elements_by_xpath(self, xpath: str):
+        ic.ic(f"Searching for: {xpath=}")
+        return self.driver.find_elements(By.XPATH, xpath)
+
     def get_elements_by_id(self, id: str):
         ic.ic(f"Searching for: {id=}")
         return self.driver.find_elements(By.ID, id)
 
-    def get_elements_by_class(self, class_name: str):
+    def get_element_by_class(self, class_name: str):
         ic.ic(f"Searching for: {class_name=}")
+        return self.driver.find_element(By.CLASS_NAME, class_name)
+
+    def get_elements_by_class(self, class_name: str):
+        ic.ic(f"Serching for: {class_name}")
         return self.driver.find_elements(By.CLASS_NAME, class_name)
 
     def scroll_to_the_end(self):
